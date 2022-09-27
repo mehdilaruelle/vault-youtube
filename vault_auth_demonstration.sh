@@ -14,6 +14,7 @@ path "secret/data/mysecret" {
 }
 EOF
 ls
+cat policy.hcl
 vault policy write user policy.hcl
 vault policy list
 vault policy read user
@@ -22,8 +23,11 @@ rm policy.hcl
 # Create userpass auth method
 vault auth enable userpass
 vault auth list
+vault auth enable -path="test" userpass
+vault auth list
 vault write auth/userpass/users/mlaruelle password=test policies=user
 vault list auth/userpass/users/
+vault list auth/test/users/ # Error because we have no user on this path
 vault read auth/userpass/users/mlaruelle
 vault write auth/userpass/users/mlaruelle policies=user,default
 vault read auth/userpass/users/mlaruelle
